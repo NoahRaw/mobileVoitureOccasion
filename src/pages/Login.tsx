@@ -1,15 +1,54 @@
 import React, { useState } from 'react';
-import { IonContent, IonInput, IonLabel, IonButton, IonPage, IonHeader, IonToolbar, IonTitle , IonRouterLink } from '@ionic/react';
-import { IonIcon, IonRow, IonCol} from '@ionic/react';
-import { person, mail, lockClosed, personCircle} from 'ionicons/icons';
+import { IonContent, IonInput, IonLabel, IonButton, IonPage, IonHeader, IonToolbar, IonTitle, IonRouterLink, IonIcon, IonRow, IonCol } from '@ionic/react';
+import { personCircle, mail, lockClosed } from 'ionicons/icons';
 
-const Login: React.FC = () => {
-    const [email, setEmail] = useState('');
+
+interface LoginProps {
+  setIsConnected: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const Login: React.FC<LoginProps> = ({ setIsConnected }) => {
+//const Login: React.FC = ({ setIsConnected }) => {
+//Login = ({ setIsConnected }) => {
+  const [token, setToken] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    // Ajoutez ici la logique de connexion
-    console.log(` email: ${email} and password: ${password}`);
+  
+  
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Construire l'URL
+    const apiUrl = `http://localhost:52195/Utilisateurs/authenticateSimpleUser?login=${email}&pwd=${password}`;
+    console.log('API URL:', apiUrl);
+    try {
+      // Effectuer la requête
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const data = await response.text();
+        const authToken = data; // Assure-toi d'adapter cela à la structure de la réponse du service web
+        if (authToken) {
+          setToken(authToken);
+          localStorage.setItem('authToken', authToken);
+          setIsConnected(true);
+
+          console.log('User is connected.');
+
+          //history.push('/home');
+        }
+
+        // Stockage dans le localStorage
+        console.log(authToken);
+      } else {
+        console.error('Erreur lors de l\'authentification');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la requête HTTP:', error);
+    }
   };
 
   return (
@@ -21,19 +60,17 @@ const Login: React.FC = () => {
       </IonHeader>
 
       <IonContent className="ion-padding">
+        <IonRow>
+          <IonCol style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <IonIcon
+              style={{ fontSize: "70px", color: "#0040ff" }}
+              icon={personCircle}
+            />
+          </IonCol>
+        </IonRow>
 
-      <IonRow>
-        <IonCol style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <IonIcon 
-            style={{ fontSize: "70px", color: "#0040ff" }}
-            icon={personCircle}
-          />
-        </IonCol>
-      </IonRow>
-
-      
-      <IonLabel position="stacked">
-        <IonIcon icon={mail} /> Email
+        <IonLabel position="stacked">
+          <IonIcon icon={mail} /> Email
         </IonLabel>
         <IonInput type="email" value={email} onIonChange={(e) => setEmail(e.detail.value!)} />
         <IonLabel position="stacked">
@@ -43,12 +80,12 @@ const Login: React.FC = () => {
         <IonButton expand="block" onClick={handleLogin}>
           Login
         </IonButton>
-        
+
         <p className="ion-text-center">
-        Don't have an account?{' '}
-        <IonRouterLink routerLink="/register">
-          Sing up
-        </IonRouterLink>
+          Don't have an account?{' '}
+          <IonRouterLink routerLink="/register">
+            Sign up
+          </IonRouterLink>
         </p>
       </IonContent>
     </IonPage>
