@@ -1,14 +1,12 @@
 // RegisterComponent.tsx
 
 import React, { useState,useEffect } from 'react';
-import { IonContent, IonInput, IonLabel, IonButton, IonPage, IonHeader, IonToolbar, 
-IonTitle, IonRouterLink,IonSelect,IonSelectOption,IonList,IonThumbnail,IonCard,IonCardHeader,
-IonCardTitle,IonCardSubtitle,IonCardContent} from '@ionic/react';
-import { IonIcon , IonImg} from '@ionic/react';
+import { IonContent, IonInput, IonLabel, IonButton, IonPage,  
+IonSelect,IonSelectOption,IonList,IonCard,IonCardHeader,
+IonCardTitle,IonCardSubtitle} from '@ionic/react';
+import { IonIcon} from '@ionic/react';
 import { trashOutline } from 'ionicons/icons';
-import { person, mail, lockClosed } from 'ionicons/icons';
 
-import {IonItem} from '@ionic/react';
 
 interface InternalValues {
   file: any;
