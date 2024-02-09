@@ -6,7 +6,7 @@ const ListeAnnonce = () => {
     const [userData, setUserData] = useState([]);
 
     const authToken = localStorage.getItem('authToken');
-
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -33,11 +33,6 @@ const ListeAnnonce = () => {
 
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Liste de vos annonces</IonTitle>
-                </IonToolbar>
-            </IonHeader>
             <IonContent>
                 <IonGrid>
                     {userData.map((user) => (
