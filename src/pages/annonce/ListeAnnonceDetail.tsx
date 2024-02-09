@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton, IonIcon } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonButton, IonIcon,IonLabel } from '@ionic/react';
 import { calendarOutline, carOutline } from 'ionicons/icons';
 
 const ListeAnnonceDetail = ({ userData, setUserData }: { userData: any, setUserData: any }) => {
     const [voiturePhoto, setVoiturePhoto] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const authToken = localStorage.getItem('authToken');
 
@@ -26,38 +28,74 @@ const ListeAnnonceDetail = ({ userData, setUserData }: { userData: any, setUserD
         fetchData();
     }, [userData.idvoitureutilisateur]);
 
-    useEffect(() => {
-        const fetchAnnonces = async () => {
-            try {
-                const response = await fetch(`http://localhost:52195/Voitureutilisateur_view/ces_annonces`, {
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserData(data);
-                } else {
-                    console.error('Erreur lors de la récupération des annonces:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Erreur lors de la récupération des annonces:', error);
-            }
-        };
-
-        fetchAnnonces();
-    }, []);
-
+    
+    
+    
     const [estVisible, setEstVisible] = useState(false);
 
     const handleClick = () => {
         setEstVisible(!estVisible);
     };
 
+
+    
+
+    const change_statut_vendu = async () => {
+        setIsLoading(true);
+
+        try {
+          const response = await fetch(`http://localhost:52195/VoitureUtilisateurs/vendu/${userData.idvoitureutilisateur}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+          });
+    
+          if (response.ok) {
+            const fetchData = async () => {
+                try {
+                    const response = await fetch(`http://localhost:52195/Voitureutilisateur_view/ces_annonces`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${authToken}`,
+                        },
+                    });
+    
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUserData(data); 
+                    } else {
+                        console.error('Erreur lors de la requête HTTP:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la requête HTTP:', error);
+                }
+            };
+    
+            fetchData();
+          } else {
+            console.error('Erreur lors de la demande:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Erreur lors de la requête HTTP:', error);
+        }finally{
+            setIsLoading(false);
+        }
+      };
+
+      useEffect(() => {
+    }, [isLoading]); 
+
+    useEffect(() => {
+    }, [userData]); 
     return (
         <IonCard>
-            <IonImg src="https://images.bfmtv.com/UsUszd-6qH5LSvmGP4LK5ZkJgwE=/4x3:1252x705/800x0/images/-180591.jpg" />
+            
+            { !isLoading && 
+            <div>
+            {voiturePhoto.map((photo) => (
+                    <img src={`${photo.nomPhoto}`}  alt="Description de l'image" ></img>
+            ))}
             <IonCardHeader>
                 <IonCardTitle>{userData.nomtypedevehicule} {userData.nommodele}</IonCardTitle>
             </IonCardHeader>
@@ -73,11 +111,31 @@ const ListeAnnonceDetail = ({ userData, setUserData }: { userData: any, setUserD
                         <p>Marque : {userData.nommarque}</p>
                         <p>Type de boite de vitesse : {userData.nomboitedevitesse}</p>
                         <p>Nombre de porte : {userData.nbrporte}</p>
-                        <p>Statut : {userData.statut}</p>
                     </div>
                 }
+
+                {userData.statut===1 &&  <div>
+                    <IonLabel position="stacked">
+                        statut :  non vendu
+                    </IonLabel>
+                <IonButton onClick={change_statut_vendu} expand="block">Vendu</IonButton>
+                </div>
+                }
+
+                {userData.statut===2 &&  <div>
+                    <IonLabel position="stacked">
+                        statut :  vendu
+                    </IonLabel>
+                </div>
+                }
+
+
                 <IonButton onClick={handleClick} expand="block">Detail</IonButton>
-            </IonCardContent>
+                </IonCardContent>
+            </div>
+            }
+            {isLoading && <img src="src/assets/gif/loading.gif" alt="Loading" className="loading-gif"/>}
+
         </IonCard>
     );
 };

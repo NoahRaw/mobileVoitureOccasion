@@ -539,8 +539,6 @@ const Insertion_annonce: React.FC = () => {
             headers.append("Authorization", "Bearer "+localStorage.getItem('authToken'));
 
             try {
-              localStorage.setItem("authToken",'2b16bb307054cec193a1ae4f48c3c239d7445a5a38df42a632566c2ae21b17a2')
-              console.log(localStorage.getItem('authToken'));
               const response = await fetch('http://localhost:52195/VoitureUtilisateurs/createAnnonce', {                
                 method: 'POST',
                 body: formData, // Utilisez formData directement comme corps de la requête
