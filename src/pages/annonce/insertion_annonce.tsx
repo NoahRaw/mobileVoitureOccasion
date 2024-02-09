@@ -51,7 +51,7 @@ const Insertion_annonce: React.FC = () => {
 
   const [idvoituredefini,setIdvoituredefini] = useState(0);
   const [photos, setPhotos] = useState<File[]>([]);
-  
+  const [isLoading, setIsLoading] = useState(false);
   
   
 
@@ -126,6 +126,7 @@ const Insertion_annonce: React.FC = () => {
     setIdmarque_state(event.detail.value);
     setAfficherMarque(false);
     setAfficherModele(true);
+    setIsLoading(true);
 
             try {
 
@@ -154,6 +155,8 @@ const Insertion_annonce: React.FC = () => {
               }
             } catch (error) {
               console.error('Erreur lors de la soumission des données:', error);
+            }finally{
+              setIsLoading(false);
             }
 
   };
@@ -162,6 +165,7 @@ const Insertion_annonce: React.FC = () => {
   const handleSelectModele = async (event: CustomEvent) => {
     setAfficherModele(false);
     setAfficherCarburant(true);
+    setIsLoading(true);
 
     idmodele = event.detail.value;
     setIdmodele_state(idmodele);
@@ -194,6 +198,8 @@ const Insertion_annonce: React.FC = () => {
        }
      } catch (error) {
        console.error('Erreur lors de la soumission des données:', error);
+     }finally{
+        setIsLoading(false);
      }
 
 
@@ -205,6 +211,7 @@ const Insertion_annonce: React.FC = () => {
     setAfficherPuissance(true);
     idcarburant = event.detail.value;
     setIdcarburant_state(idcarburant);
+    setIsLoading(true);
 
     try {
 
@@ -233,6 +240,8 @@ const Insertion_annonce: React.FC = () => {
        }
      } catch (error) {
        console.error('Erreur lors de la soumission des données:', error);
+     }finally{
+      setIsLoading(false);
      }
 
   };
@@ -244,6 +253,7 @@ const Insertion_annonce: React.FC = () => {
     setAfficherBoiteDeVitesse(true);
     idpuissance = event.detail.value;
     setIdpuissance_state(idpuissance);
+    setIsLoading(false);
 
     try {
 
@@ -272,6 +282,8 @@ const Insertion_annonce: React.FC = () => {
        }
      } catch (error) {
        console.error('Erreur lors de la soumission des données:', error);
+     }finally{
+      setIsLoading(false);
      }
 
   };
@@ -283,6 +295,7 @@ const Insertion_annonce: React.FC = () => {
     setAfficherTypeDeVehicule(true);
     idboitedevitesse = event.detail.value;
     setIdboitedevitesse_state(idboitedevitesse);
+    setIsLoading(true);
 
     try {
 
@@ -311,6 +324,8 @@ const Insertion_annonce: React.FC = () => {
        }
      } catch (error) {
        console.error('Erreur lors de la soumission des données:', error);
+     }finally{
+        setIsLoading(false);
      }
   };
 
@@ -322,7 +337,7 @@ const Insertion_annonce: React.FC = () => {
     setAfficherNbrPorte(true);
     idtypedevehicule = event.detail.value;
     setIdtypedevehicule_state(idtypedevehicule);
-
+    setIsLoading(true);
     
     try {
 
@@ -351,6 +366,8 @@ const Insertion_annonce: React.FC = () => {
        }
      } catch (error) {
        console.error('Erreur lors de la soumission des données:', error);
+     }finally{
+      setIsLoading(false);
      }
 
   };
@@ -363,6 +380,7 @@ const Insertion_annonce: React.FC = () => {
     setAfficherPuissanceVal(true);
     nbrporte = event.detail.value;
     setNbr_state(nbrporte);
+    setIsLoading(false);
 
     try {
 
@@ -391,6 +409,8 @@ const Insertion_annonce: React.FC = () => {
        }
      } catch (error) {
        console.error('Erreur lors de la soumission des données:', error);
+     }finally{
+      setIsLoading(false);
      }
   };
 
@@ -404,6 +424,7 @@ const Insertion_annonce: React.FC = () => {
     setAfficherPrix(true);
     puissance = event.detail.value;
     setPuissance_state(puissance);
+    setIsLoading(true);
 
     try {
 
@@ -432,6 +453,8 @@ const Insertion_annonce: React.FC = () => {
        }
      } catch (error) {
        console.error('Erreur lors de la soumission des données:', error);
+     }finally{
+      setIsLoading(false);
      }
   };
 
@@ -492,6 +515,7 @@ const Insertion_annonce: React.FC = () => {
   
 
        const handleInsertion = async (e: React.FormEvent) => {
+            setIsLoading(true);
             e.preventDefault();
             const formData = new FormData();
             //photos.forEach((selectedFile, index) => {
@@ -507,23 +531,14 @@ const Insertion_annonce: React.FC = () => {
               statut: 0
             };
 
-            console.log("idvoituredefini : "+idvoituredefini);
-            console.log("matricule_state : "+matricule_state);
-            console.log("kilometrage_state : "+kilometrage_state);
-            console.log("prix_state : "+prix_state);
-
-
-
 
             console.log(annonceRequest);
             formData.append('annonceRequest', new Blob([JSON.stringify(annonceRequest)], { type: 'application/json' }));
             const headers = new Headers();
             headers.append("Authorization", "Bearer "+localStorage.getItem('authToken'));
 
-
-
             try {
-              localStorage.setItem("authToken",'26fe43fb46b3487451b03e018bdf1fc625fadb3ced47397792a23b0a5e1b7c12')
+              localStorage.setItem("authToken",'89a557dfb307881116a82029da4c4da1239046c3f1cf5720cb88992f14174b9e')
               console.log(localStorage.getItem('authToken'));
               const response = await fetch('http://localhost:52195/VoitureUtilisateurs/createAnnonce', {                
                 method: 'POST',
@@ -538,8 +553,14 @@ const Insertion_annonce: React.FC = () => {
               }
             } catch (error) {
               console.error('Erreur lors de la soumission des données:', error);
+            }finally{
+              setIsLoading(false);
             }
           };
+
+          useEffect(() => {
+          }, [isLoading]); 
+        
 
   return (
     <IonPage>
@@ -549,23 +570,22 @@ const Insertion_annonce: React.FC = () => {
                       <IonLabel position="stacked">
                           <IonIcon/> Marque
                       </IonLabel>
-                      <IonSelect aria-label="Fruit" interface="popover" value={idmarque} placeholder="Select One" onIonChange={handleSelectMarque}>
+                      <IonSelect aria-label="marque" interface="popover" value={idmarque} placeholder="Select One" onIonChange={handleSelectMarque}>
                           <IonSelectOption value="0">Marque</IonSelectOption>
                           {dropdownMarque.map((option) => (
                               <IonSelectOption value={option.id_marque}>{option.description}</IonSelectOption>
                           ))}
-
                       </IonSelect>
               </div>
       )}
 
 
-      {afficherModele && (
+      {afficherModele && !isLoading && (
                 <div>
                       <IonLabel position="stacked">
                           <IonIcon/> Modele
                       </IonLabel>
-                      <IonSelect aria-label="Fruit" interface="popover" value={idmodele} placeholder="Select One" onIonChange={handleSelectModele}>
+                      <IonSelect aria-label="marque" interface="popover" value={idmodele} placeholder="Select One" onIonChange={handleSelectModele}>
                           <IonSelectOption value="0">Modele</IonSelectOption>
                           {dropdownModele.map((option) => (
                               <IonSelectOption value={option.idmodele}>{option.nommodele}</IonSelectOption>
@@ -574,12 +594,12 @@ const Insertion_annonce: React.FC = () => {
                 </div>
       )}
 
-      {afficherCarburant && (
+      {afficherCarburant && !isLoading && (
                 <div>
                     <IonLabel position="stacked">
                         <IonIcon/> Carburant
                     </IonLabel>
-                    <IonSelect aria-label="Fruit" interface="popover" value={idcarburant} placeholder="Select One" onIonChange={handleSelectCarburant}>
+                    <IonSelect aria-label="marque" interface="popover" value={idcarburant} placeholder="Select One" onIonChange={handleSelectCarburant}>
                         <IonSelectOption value="0">Carburant</IonSelectOption>
                         {dropdownCarburant.map((option) => (
                             <IonSelectOption value={option.idcarburant}>{option.nomcarburant}</IonSelectOption>
@@ -589,12 +609,12 @@ const Insertion_annonce: React.FC = () => {
       )}
 
 
-      {afficherPuissance && (
+      {afficherPuissance && !isLoading && (
                 <div>
                     <IonLabel position="stacked">
                         <IonIcon/> type Puissance
                     </IonLabel>
-                    <IonSelect aria-label="Fruit" interface="popover" value={idpuissance} placeholder="Select One" onIonChange={handleSelectIdPuissance}>
+                    <IonSelect aria-label="marque" interface="popover" value={idpuissance} placeholder="Select One" onIonChange={handleSelectIdPuissance}>
                         <IonSelectOption value="0">type Puissance</IonSelectOption>
                         {dropdownPuissance.map((option) => (
                             <IonSelectOption value={option.idpuissance}>{option.kw} kw {option.cv} cv</IonSelectOption>
@@ -603,12 +623,12 @@ const Insertion_annonce: React.FC = () => {
                 </div>
       )}
 
-      {afficherBoiteDeVitesse && (
+      {afficherBoiteDeVitesse && !isLoading && (
                 <div>
                       <IonLabel position="stacked">
                           <IonIcon/> boite de vitesse
                       </IonLabel>
-                      <IonSelect aria-label="Fruit" interface="popover" value={idboitedevitesse} placeholder="Select One" onIonChange={handleSelectBoiteDeVitesse}>
+                      <IonSelect aria-label="marque" interface="popover" value={idboitedevitesse} placeholder="Select One" onIonChange={handleSelectBoiteDeVitesse}>
                           <IonSelectOption value="0">Boite de vitesse</IonSelectOption>
                           {dropdownBoiteDeVitesse.map((option) => (
                               <IonSelectOption value={option.idboitedevitesse}>{option.nomboitedevitesse}</IonSelectOption>
@@ -617,12 +637,12 @@ const Insertion_annonce: React.FC = () => {
                 </div>
       )}
 
-      {afficherTypeDeVehicule && (
+      {afficherTypeDeVehicule && !isLoading  && (
                 <div>
                     <IonLabel position="stacked">
                         <IonIcon/> type de vehicule
                     </IonLabel>
-                    <IonSelect value={idtypedevehicule} placeholder="Select One" onIonChange={handleSelectTypeDeVehicule}>
+                    <IonSelect aria-label="marque" interface="popover" value={idtypedevehicule} placeholder="Select One" onIonChange={handleSelectTypeDeVehicule}>
                         <IonSelectOption value="0">type de vehicule</IonSelectOption>
                         {dropdownTypeDeVehicule.map((option) => (
                             <IonSelectOption value={option.idtypedevehicule}>{option.nomtypedevehicule}</IonSelectOption>
@@ -631,12 +651,12 @@ const Insertion_annonce: React.FC = () => {
                 </div>
       )}
 
-      {afficherNbrPorte && (
+      {afficherNbrPorte && !isLoading && (
                 <div>
                     <IonLabel position="stacked">
                         <IonIcon/> nombre de porte
                     </IonLabel>
-                    <IonSelect aria-label="Fruit" interface="popover" value={nbrporte} placeholder="Select One" onIonChange={handleSelectNbrPorte}>
+                    <IonSelect aria-label="marque" interface="popover" value={nbrporte} placeholder="Select One" onIonChange={handleSelectNbrPorte}>
                         <IonSelectOption value="0">Nombre porte</IonSelectOption>
                         {dropdownNbrPorte.map((option) => (
                             <IonSelectOption value={option.nbrporte}>{option.nbrporte}</IonSelectOption>
@@ -646,13 +666,13 @@ const Insertion_annonce: React.FC = () => {
       )}
 
       
-      {afficherPuissanceVal && (
+      {afficherPuissanceVal  && (
                 <div>  
                     <IonLabel position="stacked">
                         <IonIcon/> puissance
                     </IonLabel>
 
-                    <IonSelect aria-label="Fruit" interface="popover" value={puissance} placeholder="Select One" onIonChange={handleSelectPuissance}>
+                    <IonSelect aria-label="marque" interface="popover" value={puissance} placeholder="Select One" onIonChange={handleSelectPuissance}>
                         <IonSelectOption value="0">puissance</IonSelectOption>
                         {dropdownPuissance.map((option) => (
                             <IonSelectOption value={option.puissance}>{option.puissance}</IonSelectOption>
@@ -664,7 +684,7 @@ const Insertion_annonce: React.FC = () => {
 
       {afficherMatricule && (
                 <div>
-                    <IonInput label="matricule" labelPlacement="floating" fill="outline" type="text" value={matricule} onIonChange={handleSelectMatricule} />
+                    <IonInput label="matricule" labelPlacement="floating" fill="outline" type="text" value={matricule_state} onIonChange={handleSelectMatricule} />
                 </div>
       )}
 
@@ -672,7 +692,7 @@ const Insertion_annonce: React.FC = () => {
 
       {afficherKilometrage && (
                 <div>
-                    <IonInput label="Kilometrage" labelPlacement="floating" fill="outline"  type="text" value={kilometrage} onIonChange={handleSelectKilometrage} />
+                    <IonInput label="Kilometrage" labelPlacement="floating" fill="outline"  type="text" value={kilometrage_state} onIonChange={handleSelectKilometrage} />
                 </div>
       )}
 
@@ -681,7 +701,7 @@ const Insertion_annonce: React.FC = () => {
         {afficherPrix && (
                 <div>
                           <div>
-                              <IonInput label="Prix" labelPlacement="floating" fill="outline" type="text" value={prix} onIonChange={handleSelectPrix} />
+                              <IonInput label="Prix" labelPlacement="floating" fill="outline" type="text" value={prix_state} onIonChange={handleSelectPrix} />
                           </div>
 
                 <br />
@@ -713,11 +733,10 @@ const Insertion_annonce: React.FC = () => {
           </div>
         )}
 
-
-        
-                <IonButton expand="block" onClick={handleInsertion}>
-                    Publier
-                </IonButton>        
+        <IonButton expand="block" onClick={handleInsertion}>
+            Publier
+        </IonButton>        
+        {isLoading && <img src="src/assets/gif/loading.gif" alt="Loading" className="loading-gif"/>}
 
       </IonContent>
     </IonPage>
