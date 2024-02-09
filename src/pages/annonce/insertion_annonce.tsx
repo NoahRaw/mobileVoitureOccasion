@@ -5,6 +5,7 @@ import { IonContent, IonInput, IonLabel, IonButton, IonPage, IonHeader, IonToolb
 IonTitle, IonRouterLink,IonSelect,IonSelectOption,IonList,IonThumbnail,IonCard,IonCardHeader,
 IonCardTitle,IonCardSubtitle,IonCardContent} from '@ionic/react';
 import { IonIcon , IonImg} from '@ionic/react';
+import { trashOutline } from 'ionicons/icons';
 import { person, mail, lockClosed } from 'ionicons/icons';
 
 import {IonItem} from '@ionic/react';
@@ -491,6 +492,9 @@ const Insertion_annonce: React.FC = () => {
     console.log(photos);
   }, [photos]); 
 
+  const handleRemoveFile = (indexToRemove: number) => {
+    setPhotos(prevPhotos => prevPhotos.filter((_, index) => index !== indexToRemove));
+};
 
   const [dropdownMarque, setDropdownMarque] = useState([]);
 
@@ -527,8 +531,7 @@ const Insertion_annonce: React.FC = () => {
               idvoituredefini: idvoituredefini,
               matricule: matricule_state,
               kilometrage: kilometrage_state,
-              prix: prix_state,
-              statut: 0
+              prix: prix_state
             };
 
 
@@ -538,7 +541,7 @@ const Insertion_annonce: React.FC = () => {
             headers.append("Authorization", "Bearer "+localStorage.getItem('authToken'));
 
             try {
-              localStorage.setItem("authToken",'89a557dfb307881116a82029da4c4da1239046c3f1cf5720cb88992f14174b9e')
+              localStorage.setItem("authToken",'2b16bb307054cec193a1ae4f48c3c239d7445a5a38df42a632566c2ae21b17a2')
               console.log(localStorage.getItem('authToken'));
               const response = await fetch('http://localhost:52195/VoitureUtilisateurs/createAnnonce', {                
                 method: 'POST',
@@ -727,6 +730,7 @@ const Insertion_annonce: React.FC = () => {
                           <IonCardTitle>{file.name}</IonCardTitle>
                           <IonCardSubtitle></IonCardSubtitle>
                         </IonCardHeader>
+                        <IonIcon icon={trashOutline} style={{ color: 'red', fontSize: '24px' }} onClick={() => handleRemoveFile(index)}/>
                   </IonCard>
                 ))}
               </IonList>
