@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import ViewMessage from './pages/ViewMessage';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Header from './pages/Header';
+
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -23,6 +25,8 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
+import './assets/css/style.css';
+
 
 /* Theme variables */
 import './theme/variables.css';
@@ -38,16 +42,16 @@ const App: React.FC = () => {
   const authToken = localStorage.getItem('authToken');
    alert(authToken);
 
-    // if(authToken!=null && isConnected===false){
-    //   setIsConnected(true)
-    // }
+    if(authToken!=null && isConnected===false){
+       setIsConnected(true)
+    }
 
   return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
           <Route path="/" exact={true}>
-            {isConnected ? <Redirect to="/home" /> : <Login setIsConnected={setIsConnected} />}
+            {isConnected ? <Redirect to="/insertion_annonce" /> : <Login setIsConnected={setIsConnected} />}
           </Route>
           <Route path="/home" exact={true}>
             {isConnected ? <Home /> : <Redirect to="/" />}
@@ -59,6 +63,7 @@ const App: React.FC = () => {
            <ViewMessage />
           </Route>
           {/* Autres routes... */}
+          <Header />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
